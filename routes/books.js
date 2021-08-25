@@ -24,18 +24,17 @@ router.get('/', asyncHandler(async (req, res) => {
   
   /* Create a new book form. */
   router.get('/new', (req, res) => {
-    //res.render('"articles/new", { article: {}, title: "New Article" }');
     res.render('new-book');
   });
   
   /* POST new book. */
-  router.post('/', asyncHandler(async (req, res) => {
+  router.post('/new', asyncHandler(async (req, res) => {
     let book;
     try {
       book = await Book.create(req.body);
       res.redirect("/books");
     } catch (error) {
-      if(error.name === "SequelizeValidationError") { // checking the error
+      if(error.name === "SequelizeValidationError") { 
         book = await Book.build(req.body);
         res.render('new-book', { error: true });
       } 
@@ -46,7 +45,7 @@ router.get('/', asyncHandler(async (req, res) => {
   router.get('/:id/edit', asyncHandler(async(req, res) => {
     const book = await Book.findByPk(req.params.id);
     if(book) {
-      res.render("edit-book", { book });      
+      res.render('edit-book', { book });      
     } else {
       res.sendStatus(404);
     }
@@ -56,7 +55,7 @@ router.get('/', asyncHandler(async (req, res) => {
   router.get('/:id', asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
     if(book) {
-      res.render("display-book", { 
+      res.render('display-book', { 
         title: book.title,
         author: book.author,
         genre: book.genre,
@@ -77,13 +76,13 @@ router.get('/', asyncHandler(async (req, res) => {
         await book.update(req.body);
         res.redirect("/books"); 
       } else {
-        res.sendStatus(404).render('page-not-found');
+        res.status(404).render('page-not-found');
       }
     } catch (error) {
       if(error.name === "SequelizeValidationError") {
         book  = await Book.build(req.body);
-        book.id = req.params.id; // make sure correct book gets updated
-        res.render("edit-book", { error: true })
+        book.id = req.params.id; 
+        res.render('edit-book', { error: true })
       } else {
         throw error;
       }
@@ -93,7 +92,7 @@ router.get('/', asyncHandler(async (req, res) => {
   /* Delete book form. */
   router.get('/:id/delete', asyncHandler(async (req, res) => {
     const book = await Book.findByPk(req.params.id);
-    if(book ) {
+    if(book) {
       res.render("delete-book", { book });
     } else {
       res.sendStatus(404);

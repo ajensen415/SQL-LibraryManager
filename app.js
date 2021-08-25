@@ -9,8 +9,7 @@ var booksRouter = require('./routes/books');
 
 var app = express();
 
-//const { sequelize } = require('./models/index');
-const sequelize = require('./models').sequelize;
+const { sequelize } = require('./models/index');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
