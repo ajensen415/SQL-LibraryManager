@@ -17,9 +17,10 @@ function asyncHandler(cb){
 }
 
 /* GET books listing. */
-router.get('/', asyncHandler(async (req, res) => {
+router.get('/books', asyncHandler(async (req, res) => {
+    console.log('TIG OL BITTIES');
     const books = await Book.findAll({ order: [["year", "DESC"]] });
-    res.render("index", { books, title: "Books" });
+    res.render({ books, title: "Books" });
   }));
   
   /* Create a new book form. */
