@@ -5,21 +5,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var booksRouter = require('./routes/books');
 
 var app = express();
 
-const { sequelize } = require('./models/index');
-
-//Testing connection to database & syncing model
-(async () => {
-  try {
-      await sequelize.authenticate();
-      console.log('Successful connection to database!');
-  } catch (error) {
-      console.error('Unsuccessful connection to the database: ', error);
-  }
-})();
+//const { sequelize } = require('./models/index');
+const sequelize = require('./models').sequelize;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,11 +23,38 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/books', booksRouter);
+
+
+//Testing connection to database & syncing model
+(async () => {
+  try {
+      await sequelize.authenticate();
+      console.log('Successful connection to database!');
+  } catch (error) {
+      console.error('Unsuccessful connection to the database: ', error);
+  }
+})();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  const err = new Error();
+  err.status = 404;
+  err.message = 'Oops! Page not found.';
+  next(err);
+});
+
+app.use(function(err, req, res, next) {
+  if(err.status === 404) {
+    res.locals.error = err;
+    res.render('page-not-found');
+  } else if(!err.status === 404) {
+    err.status = 500;
+    err.message = 'Oops! Something went wrong - please try again.';
+    res.locals.error = err;
+    res.render('error', { err });
+  }
+
 });
 
 // error handler
