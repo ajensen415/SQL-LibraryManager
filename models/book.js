@@ -1,12 +1,12 @@
 'use strict';
-// const {
-//   Model
-// } = require('sequelize');
+const {
+  Model
+} = require('sequelize');
 
-const Sequelize = require('sequelize');
+//const Sequelize = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Book extends Sequelize.Model {
+  class Book extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.

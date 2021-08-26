@@ -4,12 +4,22 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const { sequelize } = require('./models');
+
 var indexRouter = require('./routes/index');
-//var booksRouter = require('./routes/books');
 
 var app = express();
 
-const { sequelize } = require('./models/index');
+//Testing connection to database & syncing model
+(async () => {
+  await sequelize.sync();
+  try {
+      await sequelize.authenticate();
+      console.log('Successful connection to database!');
+  } catch (error) {
+      console.error('Unsuccessful connection to the database: ', error);
+  }
+})();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,49 +32,22 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-//app.use('/books', booksRouter);
 
-
-//Testing connection to database & syncing model
-(async () => {
-  try {
-      await sequelize.authenticate();
-      console.log('Successful connection to database!');
-  } catch (error) {
-      console.error('Unsuccessful connection to the database: ', error);
-  }
-})();
-
-// catch 404 and forward to error handler
+// 404 error handler
 app.use(function(req, res, next) {
   const err = new Error();
   err.status = 404;
-  err.message = 'Oops! Page not found.';
-  next(err);
+  res.status(404).render('page-not-found', { err });
 });
 
+// global error handler
 app.use(function(err, req, res, next) {
-  if(err.status === 404) {
-    res.locals.error = err;
-    res.render('page-not-found');
-  } else if(!err.status === 404) {
-    err.status = 500;
-    err.message = 'Oops! Something went wrong - please try again.';
-    res.locals.error = err;
-    res.render('error', { err });
+  if(err.status === 404){
+    res.status(404).render('page-not-found', { err });
+  } else {
+    err.message = (err.message || 'Oops! Something went wrong - please try again.');
+    res.status(err.status||500).render('error', {err})
   }
-
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
 });
 
 module.exports = app;

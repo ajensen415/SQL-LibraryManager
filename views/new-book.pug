@@ -3,40 +3,24 @@ extends layout
 block content 
   h1 New Book 
   form(action="/books/new", method="post") 
-    if error
+    if errors
       h2.error Oops! Please try again. 
       ul.error 
-        li Title and Author is required
-      p 
-        label(for="title") Title 
-        input(type="text" name="title" id="title")
-      p 
-        label(for="author") Author 
-        input(type="text" name="author" id="author")  
-      p 
-        label(for="genre") Genre 
-        input(type="text" name="genre" id="genre")
-      p 
-        label(for="year") Year 
-        input(type="text" name="year" id="year")
-      p 
-        input(type="submit", value="Create New Book")
-      p 
-        a(class="button" href="/") Cancel
-    else 
-      p 
-        label(for="title") Title 
-        input(type="text" name="title" id="title")
-      p 
-        label(for="author") Author 
-        input(type="text" name="author" id="author")  
-      p 
-        label(for="genre") Genre 
-        input(type="text" name="genre" id="genre")
-      p 
-        label(for="year") Year 
-        input(type="text" name="year" id="year")
-      p 
-        input(type="submit", value="Create New Book")
-      p 
-        a(class="button" href="/") Cancel
+        each error in errors 
+          li= error.message
+    p 
+      label(for="title") Title 
+      input(type="text" name="title" id="title")
+    p 
+      label(for="author") Author 
+      input(type="text" name="author" id="author")  
+    p 
+      label(for="genre") Genre 
+      input(type="text" name="genre" id="genre")
+    p 
+      label(for="year") Year 
+      input(type="text" name="year" id="year")
+    p 
+      input(type="submit", value="Create New Book")
+    p 
+      a(class="button" href="/") Cancel
