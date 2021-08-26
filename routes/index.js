@@ -19,7 +19,7 @@ router.get('/', (req, res, next) => {
   res.redirect('/books');
 });
 
-/* GET books listing. */
+/* GET all books listing. */
 router.get('/books', asyncHandler(async (req, res, next) => {
   const books = await Book.findAll({ order: [['year', 'DESC']] });
   res.render("index", { books });
@@ -49,7 +49,6 @@ router.post('/books/new', asyncHandler(async (req, res, next) => {
 /* GET individual book. */
 router.get("/books/:id", asyncHandler(async (req, res, next) => {
   const book = await Book.findByPk(req.params.id);
-  //404 Error Handling
   if(book) {
     res.render('update-book', { book });
   } else {
