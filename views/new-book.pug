@@ -1,26 +1,30 @@
 extends layout 
 
 block content 
+
   h1 New Book 
-  form(action="/books/new", method="post") 
     if errors
       h2.error Oops! Please try again. 
       ul.error 
         each error in errors 
           li= error.message
-    p 
+
+  
+  form(action="/books/new", method="post") 
+
+      p 
       label(for="title") Title 
       input(type="text" name="title" id="title")
-    p 
+      p 
       label(for="author") Author 
       input(type="text" name="author" id="author")  
-    p 
+      p 
       label(for="genre") Genre 
       input(type="text" name="genre" id="genre")
-    p 
+      p 
       label(for="year") Year 
       input(type="text" name="year" id="year")
-    p 
+      p 
       input(type="submit", value="Create New Book")
-    p 
+      p 
       a(class="button" href="/") Cancel
